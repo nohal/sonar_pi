@@ -36,39 +36,43 @@ class MainFrame;
 class SonarSimulator : public wxApp {
     public:
         SonarSimulator();
-        virtual bool OnInit();
-        wxSlider* m_slider; 
-        wxCheckBox* cbox;
+
         long m_total_bytes;
+        wxCheckBox* cbox;
+        wxSlider* m_slider;
+
+        virtual bool OnInit();
+
     private:
         MainFrame* frame;
+
         wxTextCtrl* m_tc_ip_address;
         wxTextCtrl* m_tc_ip_port;
+
         void sleep_ms(int milliseconds);
         void OnIPTyped(wxCommandEvent& event);
-        void OnBtnSet(wxCommandEvent& event);
-        
+        void OnBtnSet(wxCommandEvent& event);        
 };
 
 class MainFrame: public wxFrame {
-public:
-    MainFrame(const wxString& title, const wxPoint& pos, const wxSize& size, SonarSimulator* ss);
-    int      m_port;
-    wxString m_group;
-private:
-    void fill_sonar_data(uint8_t *data);
-    int fd;
-    SonarSimulator* m_ss;
-    void OnTimer(wxTimerEvent& WXUNUSED(event));
-    wxTimer m_timer;
-    int addrlen;
-    struct sockaddr_in addr;
-    void OnExit(wxCommandEvent& event);
-    wxDECLARE_EVENT_TABLE();
-};
+    public:
+        MainFrame(const wxString& title, const wxPoint& pos, const wxSize& size, SonarSimulator* ss);
 
-enum {
-    ID_Hello = 1
-};
+        int      m_port;
+        wxString m_group;
 
+    private:
+        SonarSimulator* m_ss;
+        
+        int fd;
+        int addrlen;
+        struct sockaddr_in addr;
+        wxTimer m_timer;
+        
+        void OnExit(wxCommandEvent& event);
+        void fill_sonar_data(uint8_t *data);
+        void OnTimer(wxTimerEvent& WXUNUSED(event));
+        
+        wxDECLARE_EVENT_TABLE();
+};
 #endif
