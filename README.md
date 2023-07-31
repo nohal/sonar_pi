@@ -6,4 +6,4 @@ Data coming from the EchoZilla is displayed on a dockable window inside OpenCPN.
 * needs OpenGL (glut.h)
 * based on API 1.18
 
-- Presently in the status of setting up the repository
+- Presently in the status of setting up the repository. Not all files uploaded yet.
