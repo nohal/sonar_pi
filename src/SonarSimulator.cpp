@@ -46,7 +46,14 @@
     #define IP_PMTUDISC_DO     2        /* Always DF.  */
     #define IP_PMTUDISC_PROBE  3        /* Ignore dst pmtu.  */
     #include <unistd.h> // for sleep()
-#endif    
+#endif   
+
+#ifdef __unix__
+    #define CLOSE(x)    close(x);
+#else
+    #define CLOSE(x)    _close(x);
+#endif
+
 #include <wx/regex.h>
 
 #include "SonarSimulator.h"
@@ -105,7 +112,7 @@ SonarSimulator::SonarSimulator() {
 */
 bool SonarSimulator::OnInit() {
 
-    frame = new MainFrame( "Sonar Data Simulator", wxDefaultPosition, wxSize(-1, 240), this );
+    frame = new MainFrame( "Sonar Data Simulator", wxDefaultPosition, wxSize(-1, 320), this );
 
     // Main layouter
     wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
@@ -259,7 +266,7 @@ void MainFrame::OnExit(wxCommandEvent& event) {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
     WSACleanup();
 #endif
-    _close(true);
+    CLOSE(true);
 }
 
 /**
