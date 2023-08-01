@@ -10,28 +10,26 @@
 #include <GL/glut.h>
 #endif
 
-//TODO: Test for GL enabled
 
 PLUGIN_BEGIN_NAMESPACE
 
 static int attribs[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 0, WX_GL_SAMPLE_BUFFERS, 1, 0 };
 
-SonarPane::SonarPane(SonarDisplayWindow* parent, wxSize size)
-    : wxGLCanvas(parent, wxID_ANY, attribs, wxDefaultPosition, size, wxFULL_REPAINT_ON_RESIZE | wxBG_STYLE_CUSTOM, _T("")) {
+SonarPane::SonarPane(SonarDisplayWindow* parent)
+    : wxGLCanvas(parent, wxID_ANY, attribs, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE, _T("")) {
         
     _x = this->GetSize().GetWidth();
     _y = this->GetSize().GetHeight();
     m_parent = parent;
     
-    //if (m_parent->m_pi->IsOpenGLEnabled()) {
+    if (m_parent->m_pi->IsOpenGLEnabled()) {
         m_context = new wxGLContext(this);
         Bind(wxEVT_PAINT, &SonarPane::Render, this);
         Bind(wxEVT_SIZE, &SonarPane::OnResize, this);
-    //} else {
-      //  m_context = nullptr;
-        //Hide();
-    //}
-
+    } else {
+        m_context = nullptr;
+        Hide();
+    }
 }
 
 void SonarPane::ResetDataBuffer() {
@@ -53,8 +51,11 @@ void SonarPane::OnResize(wxSizeEvent& event) {
 }
 
 void SonarPane::Render(wxPaintEvent& event) {
-    //if (!m_parent->m_pi->IsOpenGLEnabled())  return;
-    wxPaintDC(this);
+    if (!m_parent->m_pi->IsOpenGLEnabled()) return;
+
+    // This is required even though dc is not used otherwise.
+    wxPaintDC dc(this);
+    
     SetCurrent(*m_context);
     GLfloat zoom = 1;
     GLfloat fac1;

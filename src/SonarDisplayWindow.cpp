@@ -123,7 +123,7 @@ END_EVENT_TABLE()
 
 
     // Instantiate whether or not OpenGL available, so it can take the data upon data receiver start.
-    sopa = new SonarPane(this, GetSize());
+    sopa = new SonarPane(this);
 
     // one second timer for NMEA message sending
     m_timer = new wxTimer(this, TIMER_ID);
@@ -239,9 +239,9 @@ void SonarDisplayWindow::OnContextMenuSelect(wxCommandEvent& event) {
 }
 void SonarDisplayWindow::ShowFrame() {
 
-  //  if (m_pi->IsOpenGLEnabled()) {    
+    if (m_pi->IsOpenGLEnabled()) {    
         GetSizer()->Replace(dummy, sopa);
-    //}
+    }
     wxAuiPaneInfo &p = m_aui_mgr->GetPane(this);
     
 
@@ -262,9 +262,9 @@ void SonarDisplayWindow::HideFrame() {
     wxAuiPaneInfo &p = m_aui_mgr->GetPane(this);
     p.Hide();
     m_aui_mgr->Update();
-  //  if (m_pi->IsOpenGLEnabled()) {    
+    if (m_pi->IsOpenGLEnabled()) {    
         GetSizer()->Replace(sopa, dummy);
-    //}
+    }
 }
 
 void SonarDisplayWindow::OnSize(wxSizeEvent& event) {
@@ -395,7 +395,6 @@ void SonarDisplayWindow::OnClose(wxCloseEvent& event) {
 void SonarDisplayWindow::NewDepthData(wxCommandEvent& evt) {
     m_depth_value = evt.GetInt();
     m_depth = m_depth_value / 100.0;
-
 
     if (m_depth_avail) {
         m_pi->SendNMEABuffer(m_depth);

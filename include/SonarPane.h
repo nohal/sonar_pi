@@ -17,7 +17,7 @@ PLUGIN_BEGIN_NAMESPACE
 class SonarPane : public wxGLCanvas {
 
     public:
-        SonarPane(SonarDisplayWindow* parent, wxSize size);
+        SonarPane(SonarDisplayWindow* parent);
         virtual ~SonarPane();
         
         uint8_t data_buffer[BUF_X][DATA_WIDTH] ; 

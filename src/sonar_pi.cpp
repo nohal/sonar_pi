@@ -91,7 +91,7 @@ int sonar_pi::Init() {
     _svg_dashboardsk = GetDataDir() + "sonar_pi.svg";
     _svg_dashboardsk_rollover = GetDataDir() + "sonar_pi.svg";
     _svg_dashboardsk_toggled = GetDataDir() + "sonar_pi.svg";
-    AddLocaleCatalog(_T("opencpn-sonar_pi"));
+    //AddLocaleCatalog(_T("opencpn-sonar_pi"));
 
     pi_id = InsertPlugInToolSVG(_T( "Sonar" ), _svg_dashboardsk, _svg_dashboardsk_rollover, _svg_dashboardsk_toggled, wxITEM_CHECK, _("Sonar"), _T( "" ),
             nullptr, -1, 0, this);

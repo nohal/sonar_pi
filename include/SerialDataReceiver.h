@@ -6,6 +6,12 @@
 #include "SonarDisplayWindow.h"
 #include "serialib.h"
 
+#if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
+    #define CLOSE(x)    close(x);
+#else
+    #define CLOSE(x)    _close(x);
+#endif
+
 PLUGIN_BEGIN_NAMESPACE
 
 class SerialDataReceiver: public IDataReceiver {
@@ -30,7 +36,7 @@ class SerialDataReceiver: public IDataReceiver {
         bool m_running;
         uint8_t m_frequency;
 
-        void parse_message(char* buf);
+        void parse_message(uint8_t* buf);
 
     protected:
         void SendCommand(uint8_t cmd);

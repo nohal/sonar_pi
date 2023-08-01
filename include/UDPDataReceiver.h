@@ -17,6 +17,12 @@
     #include <time.h>
 #endif
 
+#if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
+    #define CLOSE(x)    close(x);
+#else
+    #define CLOSE(x)    _close(x);
+#endif
+
 #define LOG(str)    std::cout << str << std::endl << std::flush;
 #define MSGBUFSIZE 256
 
@@ -49,7 +55,7 @@ class UDPDataReceiver : public IDataReceiver {
         uint8_t m_frequency;
         
         void SendCommand(char cmd);
-        void parse_message(char* msgbuf);
+        void parse_message(uint8_t* msgbuf);
 };
 
 PLUGIN_END_NAMESPACE

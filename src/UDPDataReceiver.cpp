@@ -64,7 +64,7 @@ void UDPDataReceiver::Startup() {
        // TODO: erro handling
     }
 
-        // set up destination address
+    // set up destination address
     //
     struct sockaddr_in addr;
     memset(&addr, 0, sizeof(addr));
@@ -90,7 +90,7 @@ void UDPDataReceiver::Startup() {
         ) < 0
     ){
         perror("setsockopt");
-        // TODO: erro handling
+        // TODO: error handling
     }
     
 
@@ -105,12 +105,10 @@ char* UDPDataReceiver::GetData() {
     return buf;
 }
 
-void UDPDataReceiver::parse_message(char* msgbuf) {
-    
-    
+void UDPDataReceiver::parse_message(uint8_t* msgbuf) {
     if(msgbuf[0]== ID_DEPTH) {
         wxCommandEvent *evt = new wxCommandEvent(NEW_DEPTH_TYPE);
-        evt->SetInt(msgbuf[1] *100 + msgbuf[2]);
+        evt->SetInt(msgbuf[1] * 100 + msgbuf[2]);
         wxQueueEvent(m_app, evt);
     } else if(msgbuf[0]== ID_SONAR) {
         memcpy(buf, msgbuf+1, sizeof(buf));
@@ -141,11 +139,11 @@ void UDPDataReceiver::SendCommand(char cmd) {
         
         shutdown(_fd, SHUT_WR);
     }
-    _close(_fd);
+    CLOSE(_fd);
 }
 
 wxThread::ExitCode UDPDataReceiver::Entry() {
-    char msgbuf[MSGBUFSIZE];
+    uint8_t msgbuf[MSGBUFSIZE];
     struct sockaddr_in from;
     socklen_t len = sizeof(from);
 
@@ -182,7 +180,6 @@ wxThread::ExitCode UDPDataReceiver::Entry() {
 
         
         }
-        //wxMilliSleep(100);
      }
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
@@ -195,7 +192,7 @@ wxThread::ExitCode UDPDataReceiver::Entry() {
 
 void UDPDataReceiver::Shutdown() {
     shutdown(fd, SHUT_RDWR);
-    _close(fd);
+    CLOSE(fd);
 }
 
 PLUGIN_END_NAMESPACE

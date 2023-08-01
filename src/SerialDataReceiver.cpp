@@ -89,7 +89,7 @@ void SerialDataReceiver::Shutdown() {
         serial.closeDevice();
     }
     shutdown(m_fd, SHUT_RDWR);
-    _close(m_fd);
+    CLOSE(m_fd);
 
     m_running = false;
 
@@ -104,7 +104,7 @@ char* SerialDataReceiver::GetData() {
     return buf;
 }
 
-void SerialDataReceiver::parse_message(char* msgbuf) {
+void SerialDataReceiver::parse_message(uint8_t* msgbuf) {
     
     if(msgbuf[0]== ID_DEPTH) {
         
@@ -148,7 +148,7 @@ void SerialDataReceiver::parse_message(char* msgbuf) {
 
 wxThread::ExitCode SerialDataReceiver::Entry() {
        
-    char buf[51];
+    uint8_t buf[51];
 
     while (!TestDestroy() && m_running) {
         
