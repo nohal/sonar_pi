@@ -104,7 +104,9 @@ char* SerialDataReceiver::GetData() {
     return buf;
 }
 
-void SerialDataReceiver::parse_message(uint8_t* msgbuf) {
+void SerialDataReceiver::parse_message(const uint8_t* msgbuf) {
+    char t_buf[51];
+    memcpy(t_buf, msgbuf, 51);
     
     if(msgbuf[0]== ID_DEPTH) {
         
@@ -116,7 +118,7 @@ void SerialDataReceiver::parse_message(uint8_t* msgbuf) {
         if(m_app->m_pi->m_serial_send_multicast) {
             sendto(
                 m_fd,
-                msgbuf,
+                t_buf,
                 3,
                 0,
                 (struct sockaddr *) &addr,
@@ -136,7 +138,7 @@ void SerialDataReceiver::parse_message(uint8_t* msgbuf) {
         if(m_app->m_pi->m_serial_send_multicast) {
             sendto(
                 m_fd,
-                msgbuf,
+                t_buf,
                 51,
                 0,
                 (struct sockaddr *) &addr,
