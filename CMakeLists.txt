@@ -54,10 +54,10 @@ set(SRC
 
 set(PACKAGE_NAME ${CMAKE_PROJECT_NAME})
 
-include(PluginCompiler)
 add_library(${CMAKE_PROJECT_NAME} SHARED EXCLUDE_FROM_ALL ${SRC})
 include_directories(BEFORE ${CMAKE_BINARY_DIR}/include)
 
+include(PluginCompiler)
 #include(Targets)
 #tarball_target()
 
