@@ -36,7 +36,7 @@ class SerialDataReceiver: public IDataReceiver {
         bool m_running;
         uint8_t m_frequency;
 
-        void parse_message(const uint8_t* buf);
+        void parse_message(uint8_t* buf);
 
     protected:
         void SendCommand(uint8_t cmd);

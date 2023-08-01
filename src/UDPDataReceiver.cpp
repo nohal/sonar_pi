@@ -150,7 +150,7 @@ wxThread::ExitCode UDPDataReceiver::Entry() {
     while (!TestDestroy()) {
         int nbytes = recvfrom(
             fd,
-            msgbuf,
+            reinterpret_cast<char*>(msgbuf),
             MSGBUFSIZE,
             0,
             (struct sockaddr*)&from,

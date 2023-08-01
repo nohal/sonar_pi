@@ -104,9 +104,7 @@ char* SerialDataReceiver::GetData() {
     return buf;
 }
 
-void SerialDataReceiver::parse_message(const uint8_t* msgbuf) {
-    char t_buf[51];
-    memcpy(t_buf, msgbuf, 51);
+void SerialDataReceiver::parse_message(uint8_t* msgbuf) {
     
     if(msgbuf[0]== ID_DEPTH) {
         
@@ -118,7 +116,7 @@ void SerialDataReceiver::parse_message(const uint8_t* msgbuf) {
         if(m_app->m_pi->m_serial_send_multicast) {
             sendto(
                 m_fd,
-                t_buf,
+                reinterpret_cast<char*>(msgbuf),
                 3,
                 0,
                 (struct sockaddr *) &addr,
@@ -131,14 +129,14 @@ void SerialDataReceiver::parse_message(const uint8_t* msgbuf) {
         
         wxCommandEvent *evt = new wxCommandEvent(NEW_DATA_TYPE);
     
-        memcpy(buf, msgbuf+1, sizeof(buf));
+        //memcpy(buf, msgbuf+1, sizeof(buf));
         
         wxQueueEvent(m_app, evt);
         
         if(m_app->m_pi->m_serial_send_multicast) {
             sendto(
                 m_fd,
-                t_buf,
+                reinterpret_cast<char*>(msgbuf),
                 51,
                 0,
                 (struct sockaddr *) &addr,
