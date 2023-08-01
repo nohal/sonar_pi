@@ -48,7 +48,7 @@
     #include <unistd.h> // for sleep()
 #endif   
 
-#ifdef __unix__
+#if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
     #define CLOSE(x)    close(x);
 #else
     #define CLOSE(x)    _close(x);
@@ -266,7 +266,7 @@ void MainFrame::OnExit(wxCommandEvent& event) {
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
     WSACleanup();
 #endif
-    CLOSE(true);
+    CLOSE(fd);
 }
 
 /**
