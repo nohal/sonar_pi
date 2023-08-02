@@ -14,42 +14,23 @@
 cmake_minimum_required(VERSION 3.12.0)
 include(${CMAKE_SOURCE_DIR}/cmake/CmakeSetup.cmake NO_POLICY_SCOPE)
 
+# -------- Build setup  --------
+#
 include(PluginOptions)
+if (BUILD_TYPE)
+  message(STATUS "Building: ${BUILD_TYPE}")
+else ()
+  message(STATUS "Configuring")
+endif ()
 
-set(PKG_NAME sonar_pi)
-set(PKG_VERSION 0.5.1)
-set(PKG_PRERELEASE "alpha")
-set(PKG_API_LIB api-18)
-set(PROJECT_VERSION_TWEAK ${PKG_PRERELEASE} )
-set(DISPLAY_NAME Sonar) # Dialogs, installer artifacts, ...
+# -------- Plugin setup ----------
+#
+include(Plugin.cmake)
 
-set(PLUGIN_API_NAME Sonar) # As of GetCommonName() in plugin API
-set(PKG_SUMMARY "Sonar Display")
-set(PKG_DESCRIPTION
-    [=[
-  Sonar Sensor Data Display
-]=])
-
-set(PKG_AUTHOR "Nicholas John Koch")
-set(PKG_IS_OPEN_SOURCE "yes")
-set(PKG_HOMEPAGE https://github.com/aviatorhh/sonar_pi)
-#set(PKG_INFO_URL https://opencpn.org/OpenCPN/plugins/sonar.html)
-
+# -------- Setup completed, build the plugin --------
+#
 project(${PKG_NAME} VERSION ${PKG_VERSION})
-
-set(VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
-set(VERSION_MINOR ${PROJECT_VERSION_MINOR})
-set(VERSION_PATCH ${PROJECT_VERSION_PATCH})
-
-set(SRC 
-        ${CMAKE_SOURCE_DIR}/src/serialib.cpp 
-        ${CMAKE_SOURCE_DIR}/src/SerialDataReceiver.cpp           
-        ${CMAKE_SOURCE_DIR}/src/UDPDataReceiver.cpp
-        ${CMAKE_SOURCE_DIR}/src/SonarPane.cpp
-        ${CMAKE_SOURCE_DIR}/src/SonarDisplayWindow.cpp
-        ${CMAKE_SOURCE_DIR}/src/PreferencesWindow.cpp
-        ${CMAKE_SOURCE_DIR}/src/sonar_pi.cpp
-)
+include(PluginCompiler)
 
 
 set(PACKAGE_NAME ${CMAKE_PROJECT_NAME})
@@ -58,8 +39,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED EXCLUDE_FROM_ALL ${SRC})
 include_directories(BEFORE ${CMAKE_BINARY_DIR}/include)
 
 include(PluginCompiler)
-#include(Targets)
-#tarball_target()
+
 
 add_subdirectory("opencpn-libs/${PKG_API_LIB}")
 if(${PKG_NAME} MATCHES wx32)
@@ -67,17 +47,23 @@ if(${PKG_NAME} MATCHES wx32)
 else()
   target_link_libraries(${CMAKE_PROJECT_NAME} ocpn::api)
 endif()
-include(PluginLibs)
 
-configure_file(${CMAKE_SOURCE_DIR}/config.h.in
-               ${CMAKE_BINARY_DIR}/include/config.h)
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(${CMAKE_BINARY_DIR}/include)
+set(VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(VERSION_PATCH ${PROJECT_VERSION_PATCH})
+
+set(PACKAGE_NAME ${CMAKE_PROJECT_NAME})
 
 # Create the minimim ocpn version id string like ov50
 string(REGEX REPLACE "\([0-9]\)\.\([0-9]\).*" "ov\\1\\2"
        OCPN_MIN_VERSION "${API_OCPN_MIN_VERSION}")
+
+
+
+
+#include_directories(${CMAKE_SOURCE_DIR}/include)
+#include_directories(${CMAKE_BINARY_DIR}/include)
 
 #include(PluginInstall)
 
@@ -94,15 +80,96 @@ string(REGEX REPLACE "\([0-9]\)\.\([0-9]\).*" "ov\\1\\2"
 #target_link_libraries(test ${wxWidgets_LIBRARIES})
 
 
+
+
+
+include(PluginSetup)
+
+
+
+configure_file(${CMAKE_SOURCE_DIR}/config.h.in
+               ${CMAKE_BINARY_DIR}/include/config.h)
+
+
+
+
+if (COMMAND late_init)
+  late_init()
+endif ()
+
+
+# Set up targets. Targets sets up new targets with BUILD_TYPE set to
+# 'flatpak', 'android' or 'tarball'. The initial call without BUILD_TYPE ends
+# here.
+#
+include(Targets)
+tarball_target()
+
+
+if ("${BUILD_TYPE}" STREQUAL "")
+  return ()
+endif ()
+
+
+if (NOT ${BUILD_TYPE} STREQUAL "flatpak")
+  # Build package as required (flatpak already dealt with).
+  #
+  if (APPLE)
+    include(MacosWxwidgets)
+  endif ()
+  include(PluginInstall)
+  if (QT_ANDROID)
+    include(AndroidLibs)
+  else ()
+    include(PluginLibs)
+  endif ()
+  #include(PluginLocalization)
+
+  include_directories(BEFORE ${CMAKE_BINARY_DIR}/include)
+ 
+  if (COMMAND add_plugin_libraries)
+    add_plugin_libraries()
+  endif ()
+
+endif ()
+
+
+configure_file(${CMAKE_SOURCE_DIR}/config.h.in
+               ${CMAKE_BINARY_DIR}/include/config.h)
+
+
+set(checksum "@checksum@")
+configure_file(
+  # The XML metadata file
+  ${CMAKE_SOURCE_DIR}/plugin.xml.in
+  ${CMAKE_BINARY_DIR}/${pkg_displayname}.xml.in
+  @ONLY
+)
+#
+# Test application for development
+#
+#set(SRC_TEST
+#  ${CMAKE_SOURCE_DIR}/src/serialib.cpp
+#  ${CMAKE_SOURCE_DIR}/src/PreferencesWindowTest.cpp 
+#)
+
+#add_executable(test WIN32 ${CMAKE_SOURCE_DIR}/src/Test.cpp)
+#target_sources(test PRIVATE ${SRC_TEST})
+#target_link_libraries(test ${wxWidgets_LIBRARIES})
+
+
+
 #
 # Sonar Data Simulator
 #
 set(SRC_SOSI
   ${CMAKE_SOURCE_DIR}/include/SonarSimulator.h 
 )
+include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_BINARY_DIR}/include)
 
-add_executable(sonarsimulator WIN32 ${CMAKE_SOURCE_DIR}/src/SonarSimulator.cpp)
+add_executable(sonarsimulator WIN32 EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/src/SonarSimulator.cpp)
 target_sources(sonarsimulator PRIVATE ${SRC_SOSI})
 target_link_libraries(sonarsimulator ${wxWidgets_LIBRARIES})
 
-target_link_libraries(${CMAKE_PROJECT_NAME} ${wxWidgets_LIBRARIES})
+#target_link_libraries(${CMAKE_PROJECT_NAME} ${wxWidgets_LIBRARIES})
