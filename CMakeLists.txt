@@ -103,35 +103,34 @@ endif ()
 # here.
 #
 include(Targets)
+# Add the primary build targets android, flatpak and tarball together
+# with support targets. Parameters:
+# - manifest: Flatpak build manifest
+
 tarball_target()
+add_custom_target(default ALL)
+if("${ARM_ARCH}" STREQUAL "")
+  add_dependencies(default tarball)
+endif()
 
 
-if ("${BUILD_TYPE}" STREQUAL "")
-  return ()
+#if ("${BUILD_TYPE}" STREQUAL "")
+#  return ()
+#endif ()
+
+
+if (APPLE)
+  include(MacosWxwidgets)
+endif ()
+include(PluginInstall)
+include(PluginLibs)
+
+include_directories(BEFORE ${CMAKE_BINARY_DIR}/include)
+
+if (COMMAND add_plugin_libraries)
+  add_plugin_libraries()
 endif ()
 
-
-if (NOT ${BUILD_TYPE} STREQUAL "flatpak")
-  # Build package as required (flatpak already dealt with).
-  #
-  if (APPLE)
-    include(MacosWxwidgets)
-  endif ()
-  include(PluginInstall)
-  if (QT_ANDROID)
-    include(AndroidLibs)
-  else ()
-    include(PluginLibs)
-  endif ()
-  #include(PluginLocalization)
-
-  include_directories(BEFORE ${CMAKE_BINARY_DIR}/include)
- 
-  if (COMMAND add_plugin_libraries)
-    add_plugin_libraries()
-  endif ()
-
-endif ()
 
 
 configure_file(${CMAKE_SOURCE_DIR}/config.h.in

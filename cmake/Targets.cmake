@@ -66,7 +66,7 @@ set(_cs_script "
     OUTPUT_FILE ${CMAKE_BINARY_DIR}/${pkg_tarname}.sha256
   )
   file(READ ${CMAKE_BINARY_DIR}/${pkg_tarname}.sha256 _SHA256)
-  string(REGEX MATCH \"^[^ ]*\" checksum \${_SHA256} )
+  string(REGEX MATCH \"^[^ ]*\" checksum \"\${_SHA256}\" )
   configure_file(
     ${CMAKE_BINARY_DIR}/${pkg_displayname}.xml.in
     ${CMAKE_BINARY_DIR}/${pkg_xmlname}.xml
