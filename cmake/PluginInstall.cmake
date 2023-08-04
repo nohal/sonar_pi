@@ -47,7 +47,7 @@ elseif (UNIX)
 endif ()
 
 # Hardcoded, absolute destination for tarball generation
-if (${BUILD_TYPE} STREQUAL "tarball" OR ${BUILD_TYPE} STREQUAL "flatpak")
+if ("${BUILD_TYPE}" STREQUAL "tarball" OR "${BUILD_TYPE}" STREQUAL "flatpak")
   install(CODE "
     configure_file(
       ${CMAKE_BINARY_DIR}/${pkg_displayname}.xml.in
@@ -59,7 +59,7 @@ endif()
 
 # On macos, fix paths which points to the build environment, make sure they
 # refers to runtime locations
-if (${BUILD_TYPE} STREQUAL "tarball" AND APPLE)
+if ("${BUILD_TYPE}" STREQUAL "tarball" AND APPLE)
   install(CODE
     "execute_process(
       COMMAND bash -c ${PROJECT_SOURCE_DIR}/cmake/fix-macos-libs.sh
