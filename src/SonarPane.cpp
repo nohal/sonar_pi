@@ -67,10 +67,15 @@ void SonarPane::Render(wxPaintEvent& event) {
 
     glPushMatrix();
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    
+#if (wxCHECK_VERSION(3, 1, 6))
     glClearColor((GLfloat)(m_parent->m_pi->m_background_colour.GetRed()/256.0),
     (GLfloat)(m_parent->m_pi->m_background_colour.GetGreen()/256.0),
     (GLfloat)(m_parent->m_pi->m_background_colour.GetBlue()/256.0), 1.0f);
+#else
+    glClearColor((GLfloat)(m_parent->m_pi->m_background_colour.Red()/256.0),
+    (GLfloat)(m_parent->m_pi->m_background_colour.Green()/256.0),
+    (GLfloat)(m_parent->m_pi->m_background_colour.Blue()/256.0), 1.0f);
+#endif
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

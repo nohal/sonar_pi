@@ -472,7 +472,11 @@ void PreferencesWindow::SetDataInterfaceDefinition(wxString data_interface) {
 
 uint16_t PreferencesWindow::GetIPPortDefinition() {
    int val;
+#if (wxCHECK_VERSION(3, 1, 6))
    m_tc_ip_port->GetValue().ToInt(&val);
+#else
+   val = wxAtoi(m_tc_ip_port->GetValue());
+#endif
    return val;
 }
 
@@ -617,7 +621,11 @@ bool IntegerValidator::Validate(wxWindow *WXUNUSED(parent)) {
 
     if (r.Matches(val)) {
         int n;
+#if (wxCHECK_VERSION(3, 1, 6))
         val.ToInt(&n);
+#else
+	n = wxAtoi(val);
+#endif
         if (n < 1024) {
             tc->SetBackgroundColour("pink");
         } else {
