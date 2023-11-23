@@ -130,6 +130,6 @@ set(SRC_SOSI
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_BINARY_DIR}/include)
 
-add_executable(sonarsimulator WIN32 EXCLUDE_FROM_ALL ${CMAKE_SOURCE_DIR}/src/SonarSimulator.cpp)
+add_executable(sonarsimulator ${CMAKE_SOURCE_DIR}/src/SonarSimulator.cpp)
 target_sources(sonarsimulator PRIVATE ${SRC_SOSI})
 target_link_libraries(sonarsimulator ${wxWidgets_LIBRARIES})
