@@ -88,12 +88,12 @@ int sonar_pi::Init() {
     LoadConfig();
     m_aui_mgr = GetFrameAuiManager();
     
-    _svg_dashboardsk = GetDataDir() + "sonar_pi.svg";
-    _svg_dashboardsk_rollover = GetDataDir() + "sonar_pi.svg";
-    _svg_dashboardsk_toggled = GetDataDir() + "sonar_pi.svg";
+    _svg_sonar = GetDataDir() + "sonar_pi.svg";
+    _svg_sonar_rollover = GetDataDir() + "sonar_pi.svg";
+    _svg_sonar_toggled = GetDataDir() + "sonar_pi.svg";
     //AddLocaleCatalog(_T("opencpn-sonar_pi"));
 
-    pi_id = InsertPlugInToolSVG(_T( "Sonar" ), _svg_dashboardsk, _svg_dashboardsk_rollover, _svg_dashboardsk_toggled, wxITEM_CHECK, _("Sonar"), _T( "" ),
+    pi_id = InsertPlugInToolSVG(_T( "Sonar" ), _svg_sonar, _svg_sonar_rollover, _svg_sonar_toggled, wxITEM_CHECK, _("Sonar"), _T( "" ),
             nullptr, -1, 0, this);
    
     sonarDisplayWindow = new SonarDisplayWindow(GetOCPNCanvasWindow(), _T("Sonar Display"), this, m_aui_mgr);

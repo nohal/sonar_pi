@@ -41,9 +41,9 @@ private:
     bool m_shown;
 
     //SerialHelper* sh;
-    wxString _svg_dashboardsk;
-    wxString _svg_dashboardsk_rollover;
-    wxString _svg_dashboardsk_toggled;
+    wxString _svg_sonar;
+    wxString _svg_sonar_rollover;
+    wxString _svg_sonar_toggled;
     int pi_id;
     void SetOpenGLMode(OpenGLMode mode);
     OpenGLMode m_opengl_mode;
