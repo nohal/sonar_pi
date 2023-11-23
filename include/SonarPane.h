@@ -3,11 +3,7 @@
 
 #include "pi_common.h"
 
-#ifdef __WXMAC__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
+#include <GL/glu.h>
 #include <wx/glcanvas.h>
 
 #include "SonarDisplayWindow.h"

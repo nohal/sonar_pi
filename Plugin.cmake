@@ -1,3 +1,14 @@
+# -------- Options ----------
+
+set(OCPN_TEST_REPO
+    "aviatorhh/opencpn-plugins"
+    CACHE STRING "Default repository for untagged builds")
+set(OCPN_BETA_REPO
+    "aviatorhh/sonar_pi-beta"
+    CACHE STRING "Default repository for tagged builds matching 'beta'")
+set(OCPN_RELEASE_REPO
+    "aviatorhh/sonar_pi-stable"
+    CACHE STRING "Default repository for tagged builds not matching 'beta'")
 
 
 set(PKG_NAME sonar_pi)
@@ -21,6 +32,8 @@ set(PKG_HOMEPAGE https://github.com/aviatorhh/sonar_pi)
 
 project(${PKG_NAME} VERSION ${PKG_VERSION})
 
+add_definitions(-DocpnUSE_GL)
+
 set(SRC 
   ${CMAKE_SOURCE_DIR}/src/serialib.cpp 
   ${CMAKE_SOURCE_DIR}/src/SerialDataReceiver.cpp           
@@ -31,6 +44,17 @@ set(SRC
   ${CMAKE_SOURCE_DIR}/src/sonar_pi.cpp
 )
         
+macro(add_plugin_libraries)
+  # Add libraries required by this plugin
+  if(WIN32)
+    add_subdirectory("${CMAKE_SOURCE_DIR}/opencpn-libs/WindowsHeaders")
+    target_link_libraries(${PACKAGE_NAME} windows::headers)
+  endif()
+
+  add_subdirectory("${CMAKE_SOURCE_DIR}/opencpn-libs/plugin_dc")
+  target_link_libraries(${PACKAGE_NAME} ocpn::plugin-dc)
+
+endmacro()
 
 
 macro(late_init)

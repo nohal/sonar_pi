@@ -4,13 +4,6 @@
 #include "sonar_pi.h"
 #include <wx/glcanvas.h>
 
-#ifdef __WXMAC__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
-
-
 PLUGIN_BEGIN_NAMESPACE
 
 static int attribs[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 0, WX_GL_SAMPLE_BUFFERS, 1, 0 };
