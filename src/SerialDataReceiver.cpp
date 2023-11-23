@@ -56,9 +56,10 @@ void SerialDataReceiver::Startup() {
                 // TODO: better exception handling
             } else {
 
+#ifndef __WXOSX__
                 char val = IP_PMTUDISC_DO;
                 setsockopt(m_fd, IPPROTO_IP, IP_MTU_DISCOVER, &val, sizeof(val));
-
+#endif
                 memset(&addr, 0, sizeof(addr));
                 addr.sin_family = AF_INET;
                 addr.sin_addr.s_addr = inet_addr(const_cast<char*>((const char*)m_app->m_pi->m_ip_address.ToUTF8()));
